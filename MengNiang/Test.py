@@ -5,7 +5,11 @@ import requests
 from bs4 import BeautifulSoup
 
 # 萌娘资源 （电脑壁纸）
+from info.Bean import CacheInfo
+
 home_url = 'http://moe.005.tv/moeimg/bz/'
+# 内容有多页的
+pager_info_items = 'http://moe.005.tv/78464.html'
 
 """
 json 文件夹为
@@ -29,6 +33,7 @@ def write_picture_json(file_name, date, title, url):
 
 
 cache_path = home_dir + "/cache"
+global cache_info
 
 
 def write_loop_cache(index, date, title, url):
@@ -92,4 +97,24 @@ def loop_pager():
         break
 
 
-loop_pager()
+def cache_info_hook(d):
+    """ dict to CacheInfo 的转换"""
+    """
+    index: 当前item 下标
+    date: 当前item 文件时间
+    title: 当前item 标题
+    url: 当前item 超链接
+    """
+    return CacheInfo(d['index'], d['date'], d['title'], d['url'])
+
+
+def init_cache_info():
+    fd = open(cache_path, "r+")
+    file_content = fd.read()
+    fd.close()
+    cache_info = json.loads(file_content, object_hook=cache_info_hook)
+    print(cache_info.index)
+
+
+init_cache_info()
+# loop_pager()
