@@ -18,6 +18,10 @@ home_dir = os.getcwd()
 
 json_dir = home_dir + "/json"
 
+cache_path = home_dir + "/cache"
+global cache_info
+current_index = 0
+
 
 def write_picture_json(file_name, date, title, url):
     print(file_name)
@@ -27,56 +31,36 @@ def write_picture_json(file_name, date, title, url):
     json_path = json_dir + "/" + file_name
     if os.path.isfile(json_path):
         os.remove(json_path)
+
+    # global cache_info
+    s = json.dumps(obj=cache_info.__dict__, ensure_ascii=False)
+    print(s)
     fd = open(json_path, "w+", encoding='utf-8')
-    fd.write('{\"url\":\"%s\",\"date\":\"%s\",\"title\":\"%s\",\"content\":[]}' % (url, date, title))
+    fd.write(s)
     fd.close()
 
 
-cache_path = home_dir + "/cache"
-global cache_info
-
-
-def write_loop_cache(index, date, title, url):
-    # if not os.path.isfile(cache_path):
-    #     fd = open(cache_path, "w+", encoding='utf-8')
-    #     fd.close()
-    cache_file = open(cache_path, 'r+')
-    cache_content = cache_file.read()
-    cache_file.close()
-    content_json = json.load(cache_content)
-    content_json['index'] = index
-    content_json['date'] = date
-    content_json['title'] = title
-    content_json['url'] = url
-
-    cache_w = open(cache_path, 'r+')
-    cache_w.write(json.dumps(content_json))
+def write_loop_cache():
+    """写入缓存"""
+    s = json.dumps(obj=cache_info.__dict__, ensure_ascii=False)
+    print(s)
+    cache_w = open(cache_path, 'w+')
+    cache_w.write(s)
     cache_w.close()
-
-
-"""
-<li>
-<a href="http://moe.005.tv/80483.html" target="_blank"><span class="zt_pic" style="background-image:url(http://www.005.tv/uploads/allimg/200401/66-200401164U50-L.jpg);"><img src="http://www.005.tv/uploads/allimg/200401/66-200401164U50-L.jpg"/><em>崩坏3电脑壁纸1080P</em></span></a>
-<span class="zt_dep">
-<strong><a href="http://moe.005.tv/80483.html">崩坏3电脑壁纸1080P</a></strong>
-<dl>
-<dt>2020-04-01</dt>
-<dd><i class="iconfont"></i>120</dd>
-</dl>
-<p>崩坏3rd游戏电脑壁纸1080P...</p>
-</span>
-</li>
-"""
 
 
 def get_picture_list_by_pager(url):
     print(url)
     req_result = requests.get(url)
+    global current_index
     if req_result.status_code == 200:
         html_str = req_result.content.decode("utf-8")
         soup = BeautifulSoup(html_str, "html.parser")
         ul = soup.select("body > div.nav_warp > div.nav_w_left > div.zhuti_w_list > ul > li")
         for li in ul:
+            if cache_info.index >= current_index:
+                current_index = current_index + 1
+                continue
             # 日期
             date = li.select('dl > dt')[0].text
             # 标题
@@ -84,7 +68,15 @@ def get_picture_list_by_pager(url):
             # 文件名
             file_name = date + "_" + title
             href = li.a.attrs['href']
-            write_picture_json(file_name, date, title, href)
+
+            cache_info.index = cache_info.index + 1
+            cache_info.date = date
+            cache_info.title = title
+            cache_info.url = href
+            tmp = date + " " + title + " " + href
+            print(tmp)
+
+            write_loop_cache()
             break
 
 
@@ -112,9 +104,10 @@ def init_cache_info():
     fd = open(cache_path, "r+")
     file_content = fd.read()
     fd.close()
+    global cache_info
     cache_info = json.loads(file_content, object_hook=cache_info_hook)
     print(cache_info.index)
 
 
 init_cache_info()
-# loop_pager()
+loop_pager()
