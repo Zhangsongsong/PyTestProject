@@ -16,28 +16,37 @@ json 文件夹为
 """
 home_dir = os.getcwd()
 
-json_dir = home_dir + "/json"
-
+# 文件记录
 cache_path = home_dir + "/cache"
+
+# 文件存储地址
+file_content_path = home_dir + "/json/PictureList"
+
 global cache_info
 current_index = 0
 
 
-def write_picture_json(file_name, date, title, url):
-    print(file_name)
-    """写入json"""
-    if not os.path.isdir(json_dir):
-        os.makedirs(json_dir)
-    json_path = json_dir + "/" + file_name
-    if os.path.isfile(json_path):
-        os.remove(json_path)
+def write_file_content(index, date, title, url):
+    """ 写入文件"""
+    content = "\"index\":{},\"date\":\"{}\",\"title\":\"{}\",\"url\":\"{}\"".format(index, date, title, url)
+    content = "{" + content + "}"
+    file_r = open(file_content_path, 'rb+')
+    file_r.seek(-1, os.SEEK_END)
+    file_r.truncate()
+    file_r.close()
 
-    # global cache_info
-    s = json.dumps(obj=cache_info.__dict__, ensure_ascii=False)
-    print(s)
-    fd = open(json_path, "w+", encoding='utf-8')
-    fd.write(s)
-    fd.close()
+    # file_c = open(file_content,)
+    size = os.path.getsize(file_content_path)
+    print(size)
+    is_new = False
+    if 5 >= size >= 0:
+        is_new = True
+    file_w = open(file_content_path, 'a+', encoding='utf-8')
+    if not is_new:
+        file_w.write(',' + content + ']')
+    else:
+        file_w.write(content + ']')
+    file_w.close()
 
 
 def write_loop_cache():
@@ -61,10 +70,12 @@ def get_picture_list_by_pager(url):
             if cache_info.index >= current_index:
                 current_index = current_index + 1
                 continue
+
             # 日期
             date = li.select('dl > dt')[0].text
             # 标题
             title = li.a.text
+            title = title.replace('\\', '')
             # 文件名
             file_name = date + "_" + title
             href = li.a.attrs['href']
@@ -73,11 +84,9 @@ def get_picture_list_by_pager(url):
             cache_info.date = date
             cache_info.title = title
             cache_info.url = href
-            tmp = date + " " + title + " " + href
-            print(tmp)
-
+            write_file_content(cache_info.index, cache_info.date, cache_info.title, cache_info.url)
             write_loop_cache()
-            break
+            # break
 
 
 def loop_pager():
