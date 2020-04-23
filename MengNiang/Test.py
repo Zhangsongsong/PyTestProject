@@ -95,7 +95,7 @@ def loop_pager():
     for i in range(1, 100):
         main_url = 'http://moe.005.tv/moeimg/bz/list_4_{}.html'.format(i)
         get_picture_list_by_pager(main_url)
-        break
+        # break
 
 
 def cache_info_hook(d):
