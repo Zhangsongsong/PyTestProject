@@ -23,7 +23,7 @@ cache_path = home_dir + "/cache"
 file_content_path = home_dir + "/json/PictureList"
 
 global cache_info
-current_index = 0
+current_index = -1
 
 
 def write_file_content(index, date, title, url):
@@ -69,7 +69,7 @@ def get_picture_list_by_pager(url):
         for li in ul:
             if cache_info.index >= current_index:
                 current_index = current_index + 1
-                continue
+                # continue
 
             # 日期
             date = li.select('dl > dt')[0].text
