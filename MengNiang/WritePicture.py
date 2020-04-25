@@ -40,7 +40,6 @@ def handle_span(spans):
 
 def handle_img(imgs):
     for img in imgs:
-        print(img['src'])
         write_picture(img['src'])
 
 
