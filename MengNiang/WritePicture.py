@@ -6,7 +6,9 @@ from bs4 import BeautifulSoup
 
 cache_json_path = os.getcwd() + "/json/PictureList"
 
+url_host = 'http://moe.005.tv/'
 test_url = 'http://moe.005.tv/78464.html'
+test_url_no_next = 'http://moe.005.tv/80483.html'
 
 file_name = 'test'
 picture_dir = os.getcwd() + "/picture"
@@ -51,8 +53,38 @@ def read_info_html(url):
             "body > div.nav_warp > div.nav_w_left > div.content_box > div:nth-child(4) > div.content_nr > div:nth-child(1) > span")
         imgs = soup.select(
             "body > div.nav_warp > div.nav_w_left > div.content_box > div:nth-child(4) > div.content_nr > div:nth-child(1) > img")
-        # handle_span(spans)
+        handle_span(spans)
         handle_img(imgs)
+        next_html = soup.select(
+            'body > div.nav_warp > div.nav_w_left > div.content_box > div:nth-child(4) > div.content_nr > div.fenye > div > ul')
+        if len(next_html) > 0:
+            print(next_html[0])
+            print('\n')
+            a_list = next_html[0].select('a')
+            print(a_list)
+            print('\n')
+
+            index = 0
+            size = len(a_list)
+            for a in a_list:
+                if index == size - 1:
+                    break
+                next_url = url_host + a['href']
+                read_info_html_next(next_url)
+                index = index + 1
+
+
+def read_info_html_next(url):
+    print(url)
+    req_request = requests.get(url)
+    if req_request.status_code == 200:
+        html_str = req_request.content.decode('utf-8')
+        soup = BeautifulSoup(html_str, "html.parser")
+        spans = soup.select(
+            "body > div.nav_warp > div.nav_w_left > div.content_box > div:nth-child(4) > div > span")
+        imgs = soup.select(
+            "body > div.nav_warp > div.nav_w_left > div.content_box > div:nth-child(4) > div > img")
+        handle_span(spans)
         handle_img(imgs)
 
 
@@ -79,5 +111,6 @@ def read_json():
 if not os.path.isdir(picture_dir):
     os.mkdir(picture_dir)
 
-read_json()
-# read_info_html(test_url)
+# read_json()
+read_info_html(test_url_no_next)
+# os.remove('')
