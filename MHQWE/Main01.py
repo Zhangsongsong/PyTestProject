@@ -18,6 +18,11 @@ link_book_key = '2dZpfU4Au0w8eRpvpK5IfQ=='
 link_book_id = 1497
 link_book_path = 6
 
+tmp_list = ['https://www.mhqwe.xyz/play?linkId=1525980&bookId=1513&path=6&key=dRUTjxWYrF30uLUgGGM6dw==',
+            'https://www.mhqwe.xyz/play?linkId=1525979&bookId=1513&path=6&key=DuhOwPY9ufC/yFga8oNgqg==',
+            'https://www.mhqwe.xyz/play?linkId=1525978&bookId=1513&path=6&key=BF7UDRQHhyGa8o4uPbmtaw==',
+            'https://www.mhqwe.xyz/play?linkId=1525977&bookId=1513&path=6&key=CggSgdz4kBnD+pfDtVbqwg==']
+
 
 def get_home_page(url):
     html_str = ''
@@ -125,9 +130,12 @@ def read_and_write(url, dir_name):
 #
 #
 #
-
-current_url = 'https://www.mhqwe.xyz/play?linkId=1525998&bookId=1513&path=6&key=+aa97S7YgQj2m6Qf7i8GJA=='
-read_and_write(current_url, dir_name=None)
+tmp_list = ['https://www.mhqwe.xyz/play?linkId=1525953&bookId=1513&path=6&key=clMvOPDwguXxpnAgODoICw==',
+            'https://www.mhqwe.xyz/play?linkId=1525952&bookId=1513&path=6&key=WdcTmFjeQGcS+Pp+h49oYQ==',
+            'https://www.mhqwe.xyz/play?linkId=1525951&bookId=1513&path=6&key=qmoEZz9l+WsFpYSQuetSlg==',
+            'https://www.mhqwe.xyz/play?linkId=1525950&bookId=1513&path=6&key=tLBbWRMHhkHJBPManJObqQ==']
+for item in tmp_list:
+    read_and_write(item, dir_name=None)
 
 # get_home_page(home_url)
 

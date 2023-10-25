@@ -127,8 +127,14 @@ def read_and_write(url, dir_name):
 #
 #
 
-current_url = 'https://www.mhqwe.xyz/play?linkId=1525905&bookId=1513&path=6&key=wZvhOwGEHZ6t67LGqighTA=='
-read_and_write(current_url, dir_name=None)
+tmp_list = ['https://www.mhqwe.xyz/play?linkId=1525944&bookId=1513&path=6&key=ffy3w7c69PTZp2rCed4NqA==',
+            'https://www.mhqwe.xyz/play?linkId=1525945&bookId=1513&path=6&key=1SaugiYr1IPXLFv+2svkvw==',
+            'https://www.mhqwe.xyz/play?linkId=1525946&bookId=1513&path=6&key=5MNlCywmKh7rSYla5pwg0w==',
+            'https://www.mhqwe.xyz/play?linkId=1525947&bookId=1513&path=6&key=9364pXFPKihyi/LzcviIIA==',
+            'https://www.mhqwe.xyz/play?linkId=1525948&bookId=1513&path=6&key=JmEDtTbFBSziin8mZr99Ug==',
+            'https://www.mhqwe.xyz/play?linkId=1525949&bookId=1513&path=6&key=ypKLQa+7IDZ3Ka64uvZMXg==']
+for item in tmp_list:
+    read_and_write(item, dir_name=None)
 
 # get_home_page(home_url)
 
